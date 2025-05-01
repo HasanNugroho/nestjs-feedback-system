@@ -15,7 +15,7 @@ import { AuthModule } from './auth/auth.module';
         }),
         TypeOrmModule.forRoot(connectionSource.options),
         UserModule,
-        AuthModule
+        AuthModule,
     ],
     controllers: [],
     providers: [],

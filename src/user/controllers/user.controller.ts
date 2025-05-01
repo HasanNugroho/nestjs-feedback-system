@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
-
 import { ApiOperation, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiConflictResponse } from '@nestjs/swagger';
+import { Inject } from '@nestjs/common';
 import { USER_SERVICE } from 'src/common/constant';
 import { IUserService } from '../interfaces/user-service.interface';
 import { CreateUserDto } from '../dtos/create-user.dto';
