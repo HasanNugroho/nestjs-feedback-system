@@ -1,11 +1,11 @@
 import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { IUserService } from '../interfaces/user-service.interface';
-import { User } from '../models/user.model';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { USER_REPOSITORY } from 'src/common/constant';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { ResponseUserDto } from '../dtos/response-user.dto';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -61,7 +61,7 @@ export class UserService implements IUserService {
 
             return (await this.userRepository.create(user)).toResponse();
         } catch (err) {
-            throw new BadRequestException(err.message);
+            throw new InternalServerErrorException(err.message);
         }
     }
 
@@ -72,34 +72,24 @@ export class UserService implements IUserService {
                 throw new NotFoundException(`User with ID ${id} not found`);
             }
 
-            // Update the user fields
-            user.name = param.name || user.name;
-            user.fullname = param.fullname || user.fullname;
-
-            if (param.email) {
+            if (param.email && user.email !== param.email) {
                 const existingEmail = await this.userRepository.findByEmail(param.email);
                 if (existingEmail && existingEmail.id !== id) {
                     throw new BadRequestException('Email is already in use');
                 }
-                user.email = param.email || user.email;
+                user.email = param.email;
             }
 
-            if (param.role) {
-                user.role = param.role || user.role;
-            }
+            user.name = param.name ?? user.name;
+            user.fullname = param.fullname ?? user.fullname;
+            user.role = param.role ?? user.role;
 
             // If password is provided, validate and encrypt it
             if (param.password) {
-                user.validatePasswordHash(param.password);
                 await user.encryptPassword(param.password);
             }
 
             await this.userRepository.update(id, user);
-
-            const updatedUser = await this.userRepository.update(id, user);
-            if (!updatedUser) {
-                throw new NotFoundException(`Failed to update user with ID ${id}`);
-            }
         } catch (error) {
             if (error instanceof NotFoundException || error instanceof BadRequestException) {
                 throw error;

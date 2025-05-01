@@ -1,8 +1,8 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { Repository } from "typeorm";
 import { IUserRepository } from "../interfaces/user-repository.interface";
-import { User } from "../models/user.model";
 import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../models/user.model";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -30,17 +30,13 @@ export class UserRepository implements IUserRepository {
         return this.db.findOne({ where: { email } });
     }
 
-    async update(id: string, userData: Partial<User>): Promise<User> {
-        const existingUser = await this.db.findOne({ where: { id } });
-
-        if (!existingUser) {
-            throw new NotFoundException('User not found');
-        }
-
-        Object.assign(existingUser, userData);
-
+    async update(id: string, userData: Partial<User>): Promise<void> {
         try {
-            return this.db.save(existingUser);
+            const result = await this.db.update(id, userData);
+
+            if (result.affected === 0) {
+                throw new NotFoundException(`User with ID ${id} not found`);
+            }
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

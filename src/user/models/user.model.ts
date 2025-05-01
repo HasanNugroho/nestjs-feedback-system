@@ -2,15 +2,32 @@ import { UserRole } from "src/common/enums/role.enum";
 import { IUser } from "src/common/interfaces/user.interface";
 import bcrypt from "bcryptjs";
 import { ResponseUserDto } from "../dtos/response-user.dto";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+@Entity('users')
 export class User implements IUser {
+    @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    @Column()
     name: string;
+
+    @Column()
     fullname: string;
+
+    @Column({ unique: true })
     email: string;
+
+    @Column()
     role: UserRole;
+
+    @Column()
     password: string;
+
+    @CreateDateColumn()
     createdAt: Date;
+
+    @UpdateDateColumn()
     updatedAt: Date;
 
     async encryptPassword(password: string): Promise<void> {

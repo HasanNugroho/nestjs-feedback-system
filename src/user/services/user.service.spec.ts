@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { USER_REPOSITORY } from '../../common/constant';
 import { IUserRepository } from '../interfaces/user-repository.interface';
-import { User } from '../models/user.model';
 import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserRole } from 'src/common/enums/role.enum';
+import { User } from '../models/user.model';
 
 describe('UserService', () => {
     let service: UserService;

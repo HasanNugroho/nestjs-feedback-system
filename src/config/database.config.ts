@@ -1,6 +1,7 @@
 import { config as dotenvConfig } from 'dotenv';
-import path from 'path';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import path from "path";
+import { User } from 'src/user/models/user.model';
+import { DataSource, DataSourceOptions } from "typeorm";
 
 dotenvConfig({ path: '.env' });
 
@@ -11,10 +12,9 @@ const dataSourceOptions: DataSourceOptions = {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [path.join(__dirname, '/../**/models/*model.{ts,js}')],
-    synchronize: true,
+    entities: [path.join(__dirname, '/../**/models/*.model{.ts,.js}')],
+    synchronize: false,
     logging: process.env.NODE_ENV !== 'production',
 };
 
 export const connectionSource = new DataSource(dataSourceOptions);
-
