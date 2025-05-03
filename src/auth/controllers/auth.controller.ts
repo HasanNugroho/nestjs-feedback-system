@@ -1,9 +1,10 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Inject, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Credentials } from '../dtos/credential.dto';
 import { IAuthService } from '../interfaces/auth-service.interface';
 import { AUTH_SERVICE } from 'src/common/constant';
 import { Public } from '../decorators/public.decorator';
+import { ApiResponse } from 'src/common/dtos/response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -60,7 +61,8 @@ export class AuthController {
     })
     @Public()
     @Post('login')
-    login(@Body() loginDto: Credentials) {
-        return this.authService.login(loginDto);
+    async login(@Body() loginDto: Credentials) {
+        const result = await this.authService.login(loginDto);
+        return new ApiResponse(HttpStatus.OK, true, "login successfully", result)
     }
 }

@@ -4,8 +4,9 @@ import { USER_REPOSITORY } from '../../common/constant';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
-import { UserRole } from 'src/common/enums/role.enum';
+import { UserRoles } from 'src/common/enums/role.enum';
 import { User } from '../models/user.model';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 describe('UserService', () => {
     let service: UserService;
@@ -35,13 +36,13 @@ describe('UserService', () => {
     });
 
     describe('findById', () => {
-        it('should return user when found', async () => {
+        it('should return user when found by id', async () => {
             const user = new User();
             repository.findById.mockResolvedValueOnce(user);
 
             const result = await service.findById('user-id');
 
-            expect(result).toBe(user);
+            expect(result).toEqual(user);
             expect(repository.findById).toHaveBeenCalledWith('user-id');
         });
 
@@ -59,13 +60,13 @@ describe('UserService', () => {
     });
 
     describe('findByEmail', () => {
-        it('should return user when found', async () => {
+        it('should return user when found by email', async () => {
             const user = new User();
             repository.findByEmail.mockResolvedValueOnce(user);
 
             const result = await service.findByEmail('user-id');
 
-            expect(result).toBe(user);
+            expect(result).toEqual(user);
             expect(repository.findByEmail).toHaveBeenCalledWith('user-id');
         });
 
@@ -89,7 +90,7 @@ describe('UserService', () => {
                 name: 'New User',
                 fullname: 'New Full User',
                 password: 'password',
-                role: UserRole.USER,
+                role: UserRoles.USER,
             };
 
             const savedUser = new User();
@@ -117,7 +118,7 @@ describe('UserService', () => {
                 name: 'New User',
                 fullname: 'New Full User',
                 password: 'password',
-                role: UserRole.USER,
+                role: UserRoles.USER,
             };
 
             const existingUser = new User();
@@ -127,6 +128,87 @@ describe('UserService', () => {
 
             await expect(service.create(createUserDto)).rejects.toThrow(BadRequestException);
             expect(repository.findByEmail).toHaveBeenCalledWith(createUserDto.email);
+        });
+    });
+
+    describe('update', () => {
+        it('should update user successfully ', async () => {
+            const savedUser = new User();
+            savedUser.email = "exist@example.com";
+            savedUser.name = "Existing User";
+            savedUser.fullname = "Existing Full User";
+            savedUser.role = UserRoles.USER;
+            savedUser.password = '$2a$12$dU41iYBbB2BQXVVnoY6iauuVS9WZfst5wYV8KLyW9ltH3mZZR.cH.';
+            savedUser.id = 'existing-user-id';
+
+            const updatesUserDto: UpdateUserDto = {
+                email: 'exist@example.com',
+                name: 'New User',
+                fullname: 'New Full User',
+                password: 'password',
+                role: UserRoles.USER,
+            };
+
+            repository.findById.mockResolvedValueOnce(savedUser);
+            repository.update.mockResolvedValueOnce(undefined);
+
+            const result = await service.update(savedUser.id, updatesUserDto);
+
+            expect(result).toBe(undefined);
+        });
+
+        it('should not return when change email successfully ', async () => {
+            const savedUser = new User();
+            savedUser.email = "exist@example.com";
+            savedUser.name = "Existing User";
+            savedUser.fullname = "Existing Full User";
+            savedUser.role = UserRoles.USER;
+            savedUser.password = '$2a$12$dU41iYBbB2BQXVVnoY6iauuVS9WZfst5wYV8KLyW9ltH3mZZR.cH.';
+            savedUser.id = 'existing-user-id';
+
+            const updatesUserDto: UpdateUserDto = {
+                email: 'new-email@example.com',
+                name: 'New User',
+                fullname: 'New Full User',
+                password: 'password',
+                role: UserRoles.USER,
+            };
+
+            repository.findById.mockResolvedValueOnce(savedUser);
+            repository.findByEmail.mockResolvedValueOnce(null);
+            repository.update.mockResolvedValueOnce(undefined);
+
+            const result = await service.update(savedUser.id, updatesUserDto);
+
+            expect(result).toEqual(undefined);
+            expect(repository.findByEmail).toHaveBeenCalledWith('new-email@example.com');
+        });
+
+        it('should throw BadRequestException when changed email duplicate ', async () => {
+            const savedUser = new User();
+            savedUser.email = "exist@example.com";
+            savedUser.name = "Existing User";
+            savedUser.fullname = "Existing Full User";
+            savedUser.role = UserRoles.USER;
+            savedUser.password = '$2a$12$dU41iYBbB2BQXVVnoY6iauuVS9WZfst5wYV8KLyW9ltH3mZZR.cH.';
+            savedUser.id = 'existing-user-id';
+
+            const updatesUserDto: UpdateUserDto = {
+                email: 'new-email@example.com',
+                name: 'New User',
+                fullname: 'New Full User',
+                password: 'password',
+                role: UserRoles.USER,
+            };
+
+            const existingEmailUser = new User();
+            existingEmailUser.email = "new-email@example.com";
+            existingEmailUser.id = 'another-user-id'; // pastikan id berbeda!
+
+            repository.findById.mockResolvedValueOnce(savedUser);
+            repository.findByEmail.mockResolvedValueOnce(existingEmailUser);
+
+            await expect(service.update(savedUser.id, updatesUserDto)).rejects.toThrow(BadRequestException);
         });
     });
 

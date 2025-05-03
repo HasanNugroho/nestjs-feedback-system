@@ -21,11 +21,8 @@ export class UserService implements IUserService {
                 throw new NotFoundException(`User with ID ${id} not found`);
             }
             return user.toResponse();
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof BadRequestException) {
-                throw error;
-            }
-            throw new InternalServerErrorException(error.message);
+        } catch (err) {
+            throw err;
         }
     }
 
@@ -36,11 +33,8 @@ export class UserService implements IUserService {
                 throw new NotFoundException(`User with email ${email} not found`);
             }
             return user.toResponse();
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof BadRequestException) {
-                throw error;
-            }
-            throw new InternalServerErrorException(error.message);
+        } catch (err) {
+            throw err;
         }
     }
 
@@ -61,7 +55,7 @@ export class UserService implements IUserService {
 
             return (await this.userRepository.create(user)).toResponse();
         } catch (err) {
-            throw new InternalServerErrorException(err.message);
+            throw err;
         }
     }
 
@@ -74,7 +68,7 @@ export class UserService implements IUserService {
 
             if (param.email && user.email !== param.email) {
                 const existingEmail = await this.userRepository.findByEmail(param.email);
-                if (existingEmail && existingEmail.id !== id) {
+                if (existingEmail && existingEmail.id !== user.id) {
                     throw new BadRequestException('Email is already in use');
                 }
                 user.email = param.email;
@@ -90,11 +84,8 @@ export class UserService implements IUserService {
             }
 
             await this.userRepository.update(id, user);
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof BadRequestException) {
-                throw error;
-            }
-            throw new InternalServerErrorException(error.message);
+        } catch (err) {
+            throw err;
         }
     }
 
@@ -107,8 +98,8 @@ export class UserService implements IUserService {
             }
 
             await this.userRepository.delete(id);
-        } catch (error) {
-            throw new BadRequestException('Failed to delete user');
+        } catch (err) {
+            throw err;
         }
     }
 }

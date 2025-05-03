@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
         TypeOrmModule.forRoot(connectionSource.options),
         UserModule,
         AuthModule,
+        FeedbackModule,
     ],
     controllers: [],
     providers: [
