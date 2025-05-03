@@ -16,7 +16,7 @@ export class UserRepository implements IUserRepository {
             return this.db.save(user);
         } catch (error) {
             if (error.code === '23505') {
-                throw new ConflictException('Role already exists');
+                throw new ConflictException('user already exists');
             }
             throw new InternalServerErrorException(error);
         }

@@ -22,4 +22,18 @@ export class ExternalUserServiceAdapter {
         }
     }
 
+    async findUserByID(id: string): Promise<User | null> {
+        try {
+            const result = await this.userServiceAdapter.execute({
+                type: 'FIND_BY_ID',
+                payload: { id },
+            });
+
+            return result as User | null;
+        } catch (error) {
+            console.error(`Error fetching user ${id}:`, error);
+            throw error
+        }
+    }
+
 }

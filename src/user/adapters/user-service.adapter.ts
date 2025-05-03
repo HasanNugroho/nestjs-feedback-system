@@ -25,7 +25,7 @@ export class UserServiceAdapter implements ServiceAdapter<UserServiceCommand, Us
                     }
                     return user;
                 } catch (error) {
-                    if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                    if (error instanceof NotFoundException) {
                         throw error;
                     }
                     throw new InternalServerErrorException(error.message);

@@ -1,4 +1,4 @@
-import { UserRole } from "src/common/enums/role.enum";
+import { UserRoles } from "src/common/enums/role.enum";
 import { IUser } from "src/common/interfaces/user.interface";
 import bcrypt from "bcryptjs";
 import { ResponseUserDto } from "../dtos/response-user.dto";
@@ -19,7 +19,7 @@ export class User implements IUser {
     email: string;
 
     @Column()
-    role: UserRole;
+    role: UserRoles;
 
     @Column()
     password: string;

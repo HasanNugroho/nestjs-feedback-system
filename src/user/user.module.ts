@@ -7,29 +7,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.model';
 import { UserServiceAdapter } from './adapters/user-service.adapter';
 
+const userRepoProvider = {
+    provide: USER_REPOSITORY,
+    useClass: UserRepository,
+};
+
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([User]),
-    ],
+    imports: [TypeOrmModule.forFeature([User])],
     controllers: [UserController],
     providers: [
         {
             provide: USER_SERVICE,
             useClass: UserService,
         },
-        {
-            provide: USER_REPOSITORY,
-            useClass: UserRepository,
-        },
+        userRepoProvider,
         UserService,
         UserServiceAdapter,
     ],
-    exports: [
-        {
-            provide: USER_REPOSITORY,
-            useClass: UserRepository,
-        },
-        UserServiceAdapter,
-    ]
+    exports: [userRepoProvider, UserServiceAdapter],
 })
 export class UserModule { }

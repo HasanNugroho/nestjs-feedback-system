@@ -2,17 +2,20 @@ export class ApiResponse<T> {
     success: boolean;
     statusCode: number;
     message: string | string[];
-    data?: T; // Optionally include the response data
+    data?: T;
+    error?: string | string[];
 
     constructor(
         statusCode: number,
         success: boolean,
         message: string | string[],
-        data?: T
+        data?: T,
+        error?: string | string[],
     ) {
         this.statusCode = statusCode;
         this.success = success;
         this.message = message;
         this.data = data;
+        this.error = error;
     }
 }
