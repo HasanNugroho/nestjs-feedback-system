@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { IFeedbackService } from './interfaces/feedback-service.interface';
 import { FEEDBACK_ATTACHMENT_REPOSITORY, FEEDBACK_REPOSITORY } from 'src/common/constant';
 import { IFeedbackRepository } from './interfaces/feedback-repository.interface';
@@ -8,11 +8,15 @@ import { UpdateStatusFeedbackDto } from './dtos/update-feedback.dto';
 import { FeedbackStatus } from 'src/common/enums/feedback.enum';
 import { FilterOptionDto } from './dtos/filter-option.dto';
 import { IFeedbackAttachmentRepository } from './interfaces/feedback-attachment-repository.interface';
-import { ConfigService } from '@nestjs/config';
 import { ExternalUserServiceAdapter } from './adapters/external-user-service.adapter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { FeedbackCreatedEvent } from './events/feedback-create.event';
+import { EventName } from '../common/enums/event-name.enum';
 
 @Injectable()
 export class FeedbackService implements IFeedbackService {
+    private readonly logger = new Logger(FeedbackService.name);
+
     constructor(
         @Inject(FEEDBACK_REPOSITORY)
         private feedbackRepository: IFeedbackRepository,
@@ -21,6 +25,7 @@ export class FeedbackService implements IFeedbackService {
         private feedbackAttachmentRepo: IFeedbackAttachmentRepository,
 
         private userServiceAdapter: ExternalUserServiceAdapter,
+        private eventEmitter: EventEmitter2
     ) { }
 
     async create(userID: string, param: CreateFeedbackDto, files?: Express.Multer.File[]): Promise<Feedback> {
@@ -47,17 +52,22 @@ export class FeedbackService implements IFeedbackService {
                 await this.feedbackAttachmentRepo.saveAttachments(attachments);
             }
 
+            // Emit the feedback created event
+            this.eventEmitter.emit(EventName.FEEDBACK_CREATED, new FeedbackCreatedEvent(result, userID));
+
             return result
-        } catch (error) {
-            throw error
+        } catch (err) {
+            this.logger.error(err)
+            throw err
         }
     }
 
     async findAll(query: FilterOptionDto): Promise<{ feedback: Feedback[]; totalCount: number; }> {
         try {
             return await this.feedbackRepository.findAll(query);
-        } catch (error) {
-            throw error
+        } catch (err) {
+            this.logger.error(err)
+            throw err
         }
     }
 
@@ -79,8 +89,9 @@ export class FeedbackService implements IFeedbackService {
             }
 
             return feedback
-        } catch (error) {
-            throw error
+        } catch (err) {
+            this.logger.error(err)
+            throw err
         }
     }
 
@@ -94,8 +105,9 @@ export class FeedbackService implements IFeedbackService {
             feedback.status = param.status
 
             await this.feedbackRepository.update(id, feedback)
-        } catch (error) {
-            throw error
+        } catch (err) {
+            this.logger.error(err)
+            throw err
         }
     }
 }

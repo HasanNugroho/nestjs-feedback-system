@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +9,8 @@ import { IAuthService } from './interfaces/auth-service.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         private readonly userServiceAdapter: ExternalUserServiceAdapter,
 
@@ -23,20 +25,23 @@ export class AuthService implements IAuthService {
 
         try {
             const user = await this.userServiceAdapter.findUserByEmail(identifier)
-            if (!user) {
-                throw new UnauthorizedException('Invalid identifier or password');
-            }
 
-            const isPasswordValid = await user.validatePasswordHash(password);
-            if (!isPasswordValid) {
+            if (!user || !(await user.validatePasswordHash(password))) {
                 throw new UnauthorizedException('Invalid identifier or password');
             }
 
             return await this.generateTokens(user.id);
         } catch (error) {
-            if (error instanceof NotFoundException || error instanceof UnauthorizedException || error instanceof BadRequestException) {
+            this.logger.error(error)
+            if (error instanceof UnauthorizedException || error instanceof BadRequestException) {
                 throw error
             }
+
+            if (error instanceof NotFoundException) {
+                throw new UnauthorizedException('Invalid identifier or password');
+
+            }
+
             throw new InternalServerErrorException('internal server error');
         }
     }

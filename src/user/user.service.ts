@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { USER_REPOSITORY } from 'src/common/constant';
 import { IUserService } from './interfaces/user-service.interface';
 import { IUserRepository } from './interfaces/user-repository.interface';
@@ -9,6 +9,8 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService implements IUserService {
+    private readonly logger = new Logger(UserService.name);
+
     constructor(
         @Inject(USER_REPOSITORY)
         private readonly userRepository: IUserRepository,
@@ -22,6 +24,7 @@ export class UserService implements IUserService {
             }
             return user.toResponse();
         } catch (err) {
+            this.logger.error(err)
             throw err;
         }
     }
@@ -34,6 +37,7 @@ export class UserService implements IUserService {
             }
             return user.toResponse();
         } catch (err) {
+            this.logger.error(err)
             throw err;
         }
     }
@@ -55,6 +59,7 @@ export class UserService implements IUserService {
 
             return (await this.userRepository.create(user)).toResponse();
         } catch (err) {
+            this.logger.error(err)
             throw err;
         }
     }
@@ -85,6 +90,7 @@ export class UserService implements IUserService {
 
             await this.userRepository.update(id, user);
         } catch (err) {
+            this.logger.error(err)
             throw err;
         }
     }
@@ -99,6 +105,7 @@ export class UserService implements IUserService {
 
             await this.userRepository.delete(id);
         } catch (err) {
+            this.logger.error(err)
             throw err;
         }
     }

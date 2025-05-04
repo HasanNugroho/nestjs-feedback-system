@@ -12,6 +12,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { MongooseModule } from '@nestjs/mongoose';
             envFilePath: ['.env.development.local', '.env.development', '.env'],
             load: [configuration],
         }),
+        EventEmitterModule.forRoot(),
         TypeOrmModule.forRoot(connectionSource.options),
         MongooseModule.forRoot(mongoDSN),
         ServeStaticModule.forRoot({
