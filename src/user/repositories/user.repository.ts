@@ -30,6 +30,17 @@ export class UserRepository implements IUserRepository {
         return this.db.findOne({ where: { email } });
     }
 
+    async getAllUsersMinimalData(): Promise<User[]> {
+        return await this.db.find({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+            }
+        })
+    }
+
     async update(id: string, userData: Partial<User>): Promise<void> {
         try {
             await this.db.update(id, { ...userData, updatedAt: new Date() });

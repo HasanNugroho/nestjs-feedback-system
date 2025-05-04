@@ -19,10 +19,33 @@ export class ExternalUserServiceAdapter {
                 throw new NotFoundException();
             }
 
+            if (Array.isArray(result)) {
+                throw new Error('Expected a single user, but got an array.');
+            }
             const { password, ...safeUser }: IUser = result;
             return safeUser;
         } catch (error) {
             console.error(`Error fetching user ${id}:`, error);
+            throw error
+        }
+    }
+
+    async findAllUserMinimal(): Promise<IUser[] | null> {
+        try {
+            const result = await this.userServiceAdapter.execute({
+                type: 'GET_ALL_MINIMAL',
+            });
+
+            if (!Array.isArray(result)) {
+                throw new Error('Expected a array user, but got an single.');
+            }
+
+            if (result.length == 0) {
+                throw new NotFoundException();
+            }
+            return result;
+        } catch (error) {
+            console.error(`Error fetching users:`, error);
             throw error
         }
     }

@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { IFeedbackRepository } from "../interfaces/feedback-repository.interface";
 import { Feedback } from "../models/feedback.model";
-import { Between, FindOptionsWhere, ILike, Raw, Repository } from "typeorm";
+import { Between, FindOptionsWhere, ILike, In, LessThan, Not, Raw, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FilterOptionDto } from "../dtos/filter-option.dto";
 
@@ -53,6 +53,19 @@ export class FeedbackPGRepository implements IFeedbackRepository {
 
     async findById(id: string): Promise<Feedback | null> {
         return await this.db.findOneBy({ id });
+    }
+
+    async findFeedbacksSubmittedRecently(
+        days: number,
+    ): Promise<Feedback[]> {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+
+        return this.db
+            .createQueryBuilder('feedback')
+            .select('feedback.userId')
+            .where('feedback.createdAt > :cutoffDate', { cutoffDate })
+            .getMany();
     }
 
     async update(id: string, feedback: Partial<Feedback>): Promise<void> {

@@ -13,6 +13,8 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { SchedulerModule } from './scheduler/scheduler.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -21,6 +23,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
             envFilePath: ['.env.development.local', '.env.development', '.env'],
             load: [configuration],
         }),
+        ScheduleModule.forRoot(),
         EventEmitterModule.forRoot(),
         TypeOrmModule.forRoot(connectionSource.options),
         MongooseModule.forRoot(mongoDSN),
@@ -35,6 +38,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         UserModule,
         AuthModule,
         FeedbackModule,
+        SchedulerModule,
     ],
     controllers: [],
     providers: [

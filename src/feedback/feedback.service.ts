@@ -12,6 +12,8 @@ import { ExternalUserServiceAdapter } from './adapters/external-user-service.ada
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FeedbackCreatedEvent } from './events/feedback-create.event';
 import { EventName } from '../common/enums/event-name.enum';
+import { IUser } from 'src/common/interfaces/user.interface';
+import { FeedbackReminderEvent } from './events/feedback-reminder.event';
 
 @Injectable()
 export class FeedbackService implements IFeedbackService {
@@ -107,6 +109,38 @@ export class FeedbackService implements IFeedbackService {
             await this.feedbackRepository.update(id, feedback)
         } catch (err) {
             this.logger.error(err)
+            throw err
+        }
+    }
+
+    async reminderUser(days: number = 7): Promise<IUser[]> {
+        try {
+            const users = await this.findUsersDueForFeedbackReminder(days)
+
+            // Emit the feedback reminder event
+            this.eventEmitter.emit(EventName.FEEDBACK_REMINDER, new FeedbackReminderEvent(users));
+
+            return users;
+        } catch (err) {
+            this.logger.error(err)
+            throw err
+        }
+    }
+
+    async findUsersDueForFeedbackReminder(days: number = 7): Promise<IUser[]> {
+        try {
+            const feedbacks = await this.feedbackRepository.findFeedbacksSubmittedRecently(days);
+
+            const usersWithFeedbackIds = new Set(feedbacks.map(feedback => feedback.userId));
+
+            const users = await this.userServiceAdapter.findAllUserMinimal();
+            if (!users || users.length === 0) {
+                throw new NotFoundException('No users found');
+            }
+
+            return users.filter(user => !usersWithFeedbackIds.has(user.id));
+        } catch (err) {
+            this.logger.error('Error finding users due for feedback reminder:', err);
             throw err
         }
     }

@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpStatus, Inject, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, NotFoundException, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FEEDBACK_SERVICE } from 'src/common/constant';
 import { IFeedbackService } from './interfaces/feedback-service.interface';
 import { CreateFeedbackDto } from './dtos/create-feedback.dto';
 import { ApiResponse } from 'src/common/dtos/response.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Feedback } from './models/feedback.model';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/user/models/user.model';
@@ -91,6 +91,24 @@ export class FeedbackController {
         }
     }
 
+
+    @ApiOperation({ summary: 'Reminder user where not fill feedback' })
+    @ApiQuery({
+        name: "days",
+        type: Number
+    })
+    @ApiNotFoundResponse({
+        description: "Not found",
+    })
+    @ApiBadRequestResponse({
+        description: "Bad request",
+    })
+    @Post('/remind-unsubmitted')
+    async reminderUser(@Query('days', new ParseIntPipe({ optional: true })) days: number) {
+        const result = await this.feedbackService.reminderUser(days);
+        return new ApiResponse(HttpStatus.OK, true, "reminder user(s) successfully", result)
+    }
+
     @ApiOperation({ summary: 'Update feedback status by ID' })
     @ApiBody({ type: UpdateStatusFeedbackDto })
     @ApiNotFoundResponse({
@@ -102,6 +120,6 @@ export class FeedbackController {
     @Put(':id')
     async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() payload: UpdateStatusFeedbackDto) {
         const result = await this.feedbackService.updateStatus(id, payload);
-        return new ApiResponse(HttpStatus.CREATED, true, "update feedback successfully", result)
+        return new ApiResponse(HttpStatus.OK, true, "update feedback successfully", result)
     }
 }

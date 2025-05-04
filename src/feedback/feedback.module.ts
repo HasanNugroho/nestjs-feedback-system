@@ -15,6 +15,7 @@ import { FeedbackAttachmentRepository } from './repositories/feedback-attachment
 import { ExternalUserServiceAdapter } from './adapters/external-user-service.adapter';
 import { UserModule } from 'src/user/user.module';
 import { FeedbackEventsListener } from './listeners/feedback.listener';
+import { FeedbackServiceAdapter } from './adapters/feedback-service.adapter';
 
 @Module({
     imports: [
@@ -73,7 +74,11 @@ import { FeedbackEventsListener } from './listeners/feedback.listener';
         },
         ExternalUserServiceAdapter,
         FeedbackService,
-        FeedbackEventsListener
+        FeedbackEventsListener,
+        FeedbackServiceAdapter
     ],
+    exports: [
+        FeedbackServiceAdapter
+    ]
 })
 export class FeedbackModule { }

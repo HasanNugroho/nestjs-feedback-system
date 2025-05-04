@@ -6,7 +6,7 @@ export interface IFeedbackRepository {
     /**
      * @param id - The ID of the feedback to find
      * 
-     * @returns The feedback with the given ID, or null if not found
+     * @returns An object containing a list of feedbacks and the total count
      */
     findById(id: string): Promise<Feedback | null>;
 
@@ -16,6 +16,14 @@ export interface IFeedbackRepository {
      * @returns The feedback with the given ID, or null if not found
      */
     findAll(query: FilterOptionDto): Promise<{ feedback: Feedback[], totalCount: number }>;
+
+    /**
+     * Finds feedbacks submitted within the last specified number of days.
+     *
+     * @param days - The number of days to consider feedbacks as recent.
+     * @returns An array of feedbacks submitted within the last specified number of days.
+     */
+    findFeedbacksSubmittedRecently(days: number): Promise<Feedback[]>
 
     /**
      * @param feedback - The feedback to create

@@ -16,5 +16,8 @@ export default () => ({
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
         name: process.env.DB_NAME,
-    }
+    },
+    reminder: {
+        defaultDays: parseInt(process.env.REMINDER_DEFAULT_DAYS || '7', 10),
+    },
 });

@@ -10,4 +10,12 @@ export class FeedbackEventsListener {
     handleFeedbackCreatedEvent(payload: any) {
         this.logger.log(`Feedback created by user ${payload.userId}`);
     }
+
+    @OnEvent(EventName.FEEDBACK_REMINDER, { async: true })
+    handleFeedbackReminderEvent(payload: any) {
+        payload.users.map(user => {
+            this.logger.log(`reminder feedback for user ${user.email}`);
+        })
+    }
+
 }

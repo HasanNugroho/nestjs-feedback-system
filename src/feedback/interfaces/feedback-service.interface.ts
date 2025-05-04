@@ -2,6 +2,7 @@ import { CreateFeedbackDto } from "../dtos/create-feedback.dto";
 import { UpdateStatusFeedbackDto } from "../dtos/update-feedback.dto";
 import { Feedback } from "../models/feedback.model";
 import { FilterOptionDto } from "../dtos/filter-option.dto";
+import { IUser } from "src/common/interfaces/user.interface";
 
 export interface IFeedbackService {
     /**
@@ -17,6 +18,13 @@ export interface IFeedbackService {
      * @returns The feedback with the given ID, or null if not found
      */
     findAll(query: FilterOptionDto): Promise<{ feedback: Feedback[], totalCount: number }>;
+
+    /**
+     * @param days - The number of days to check for user reminders
+     * 
+     * @returns A list of users who need to be reminded based on the specified number of days
+     */
+    reminderUser(days: number): Promise<IUser[]>
 
     /**
      * @param feedback - The feedback to create

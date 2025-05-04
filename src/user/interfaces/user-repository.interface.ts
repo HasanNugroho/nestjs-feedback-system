@@ -16,6 +16,12 @@ export interface IUserRepository {
     findByEmail(email: string): Promise<User | null>;
 
     /**
+     * 
+     * @returns The users with minimal data
+     */
+    getAllUsersMinimalData(): Promise<User[]>;
+
+    /**
      * @param user - The user to create
      * 
      * @returns The created user
