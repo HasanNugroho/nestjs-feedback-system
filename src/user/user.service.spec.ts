@@ -7,32 +7,16 @@ import { USER_REPOSITORY } from 'src/common/constant';
 import { User } from './models/user.model';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { TestBed, Mocked } from '@suites/unit';
 
 describe('UserService', () => {
     let service: UserService;
-    let repository: jest.Mocked<IUserRepository>;
+    let repository: Mocked<IUserRepository>;
 
     beforeEach(async () => {
-        const repositoryMock: jest.Mocked<IUserRepository> = {
-            findById: jest.fn(),
-            findByEmail: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-        };
-
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                {
-                    provide: USER_REPOSITORY,
-                    useValue: repositoryMock,
-                },
-                UserService,
-            ],
-        }).compile();
-
-        repository = module.get(USER_REPOSITORY);
-        service = module.get(UserService);
+        const { unit, unitRef } = await TestBed.solitary(UserService).compile();
+        service = unit;
+        repository = unitRef.get(USER_REPOSITORY);
     });
 
     describe('findById', () => {

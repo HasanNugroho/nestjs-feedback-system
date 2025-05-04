@@ -1,6 +1,7 @@
 import { FeedbackCategory, FeedbackStatus } from "src/common/enums/feedback.enum"
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
-import { FeedbackAttachment } from "../schemas/feedback-attachment.schema"
+import { FeedbackAttachment } from "./feedback-attachment.model"
+import { IUser } from "src/common/interfaces/user.interface"
 
 @Entity('feedbacks')
 export class Feedback {
@@ -33,5 +34,6 @@ export class Feedback {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    attachment?: FeedbackAttachment
+    attachment?: FeedbackAttachment[]
+    user?: IUser
 }

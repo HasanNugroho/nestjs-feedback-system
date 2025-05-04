@@ -17,3 +17,5 @@ const dataSourceOptions: DataSourceOptions = {
 };
 
 export const connectionSource = new DataSource(dataSourceOptions);
+
+export const mongoDSN: string = process.env.MONGO_DSN || 'mongodb://localhost:27017/test';

@@ -1,7 +1,6 @@
-import { UploadedFiles } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsOptional, IsString } from "class-validator";
-import { FeedbackCategory, FeedbackStatus } from "src/common/enums/feedback.enum";
+import { IsEnum, IsString } from "class-validator";
+import { FeedbackCategory } from "src/common/enums/feedback.enum";
 
 export class CreateFeedbackDto {
     @ApiProperty({ example: "message" })

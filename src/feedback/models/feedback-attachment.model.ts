@@ -1,4 +1,5 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 @Schema({ timestamps: true })
 export class FeedbackAttachment extends Document {
@@ -17,3 +18,5 @@ export class FeedbackAttachment extends Document {
     @Prop({ required: true })
     size: string;
 }
+
+export const FeedbackAttachmentSchema = SchemaFactory.createForClass(FeedbackAttachment);

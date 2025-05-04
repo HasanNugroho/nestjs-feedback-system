@@ -8,4 +8,6 @@ export interface IUser {
     role: UserRoles;
     createdAt: Date;
     updatedAt: Date;
+
+    password?: string;
 }
