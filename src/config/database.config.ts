@@ -12,7 +12,7 @@ const dataSourceOptions: DataSourceOptions = {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     entities: [path.join(__dirname, '/../**/models/*.model{.ts,.js}')],
-    synchronize: false,
+    synchronize: true,
     logging: process.env.NODE_ENV !== 'production',
 };
 

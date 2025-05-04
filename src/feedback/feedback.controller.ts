@@ -22,6 +22,7 @@ export class FeedbackController {
         private readonly feedbackService: IFeedbackService
     ) { }
 
+
     @ApiOperation({ summary: 'Endpoint for create feedback' })
     @ApiCreatedResponse({
         description: 'Response success create feedback',
@@ -48,6 +49,7 @@ export class FeedbackController {
         }
     }
 
+
     @ApiOperation({ summary: 'Get paginated feedbacks (admin only)' })
     @ApiOkResponse({
         type: Feedback,
@@ -67,6 +69,7 @@ export class FeedbackController {
             throw error;
         }
     }
+
 
     @ApiOperation({ summary: 'Get feedback by id' })
     @ApiOkResponse({
@@ -103,11 +106,13 @@ export class FeedbackController {
     @ApiBadRequestResponse({
         description: "Bad request",
     })
+    @Roles([UserRoles.ADMIN])
     @Post('/remind-unsubmitted')
     async reminderUser(@Query('days', new ParseIntPipe({ optional: true })) days: number) {
         const result = await this.feedbackService.reminderUser(days);
         return new ApiResponse(HttpStatus.OK, true, "reminder user(s) successfully", result)
     }
+
 
     @ApiOperation({ summary: 'Update feedback status by ID' })
     @ApiBody({ type: UpdateStatusFeedbackDto })
@@ -117,6 +122,7 @@ export class FeedbackController {
     @ApiBadRequestResponse({
         description: "Bad request",
     })
+    @Roles([UserRoles.ADMIN])
     @Put(':id')
     async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() payload: UpdateStatusFeedbackDto) {
         const result = await this.feedbackService.updateStatus(id, payload);

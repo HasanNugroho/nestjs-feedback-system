@@ -1,28 +1,57 @@
-services:
-    psql_bp:
-        image: postgres:latest
-        container_name: postgres_db
-        restart: unless-stopped
-        environment:
-            POSTGRES_DB: ${DB_NAME}
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASS}
-        ports:
-            - "${DB_PORT}:5432"
-        volumes:
-            - psql_volume_bp:/var/lib/postgresql/data
+version: '3.8'
 
-    mongodb:
-        image: mongo:6.0
-        container_name: mongodb
-        restart: always
-        ports:
-            - "27017:27017"
-        volumes:
-            - mongo-data:/data/db
-        environment:
-            MONGO_INITDB_DATABASE: test
+services:
+  app:
+    build: .
+    container_name: nest_app
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_NAME: ${APP_NAME}
+      APP_DESC: ${APP_DESC}
+      VERSION: ${VERSION}
+      PORT: ${PORT}
+
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: psql_bp
+
+      MONGO_DSN: mongodb://mongodb:27017/test
+
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_EXPIRED: ${JWT_EXPIRED}
+      REMINDER_DEFAULT_DAYS: ${REMINDER_DEFAULT_DAYS}
+    depends_on:
+      - psql_bp
+      - mongodb
+
+  psql_bp:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - psql_volume_bp:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: test
 
 volumes:
-    psql_volume_bp:
-    mongo-data:
+  psql_volume_bp:
+  mongo-data:

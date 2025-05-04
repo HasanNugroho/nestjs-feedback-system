@@ -46,7 +46,7 @@ export class FeedbackService implements IFeedbackService {
                         feedbackId: result.id,
                         fileName: file.originalname,
                         mimetype: file.mimetype,
-                        path: `/data/${file.originalname}`,
+                        path: `asset/${file.filename}`,
                         size: file.size.toString()
                     };
                 });

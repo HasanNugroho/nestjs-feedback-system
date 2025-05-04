@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
-import { ApiOperation, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiConflictResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query } from '@nestjs/common';
+import { ApiOperation, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiConflictResponse, ApiOkResponse } from '@nestjs/swagger';
 import { Inject } from '@nestjs/common';
 import { USER_SERVICE } from 'src/common/constant';
 import { IUserService } from './interfaces/user-service.interface';
@@ -8,6 +8,9 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiResponse } from 'src/common/dtos/response.dto';
 import { ResponseUserDto } from './dtos/response-user.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { User } from './models/user.model';
+import { PageMetaDto } from 'src/common/dtos/page-meta.dto';
+import { PaginationOptionsDto } from 'src/common/dtos/page-option.dto';
 
 
 @Public()
@@ -54,6 +57,25 @@ export class UserController {
         return new ApiResponse(HttpStatus.CREATED, true, "fetch user(s) successfully", user);
     }
 
+
+    @ApiOperation({ summary: 'Get paginated users' })
+    @ApiOkResponse({
+        type: User,
+        isArray: true,
+    })
+    @ApiBadRequestResponse({
+        description: 'Invalid query parameters',
+    })
+    @Get()
+    async findAll(@Query() filter: PaginationOptionsDto) {
+        try {
+            const { users, totalCount } = await this.userService.findAll(filter);
+            return new ApiResponse(HttpStatus.OK, true, "Fetch user(s) successfully", users, new PageMetaDto(filter, totalCount));
+        } catch (error) {
+            console.error(error.stack);
+            throw error;
+        }
+    }
 
     @ApiOperation({ summary: 'Update user by ID' })
     @ApiNotFoundResponse({

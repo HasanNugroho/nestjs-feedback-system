@@ -6,6 +6,7 @@ import { ResponseUserDto } from './dtos/response-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './models/user.model';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { PaginationOptionsDto } from 'src/common/dtos/page-option.dto';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -39,6 +40,15 @@ export class UserService implements IUserService {
         } catch (err) {
             this.logger.error(err)
             throw err;
+        }
+    }
+
+    async findAll(query: PaginationOptionsDto): Promise<{ users: User[]; totalCount: number; }> {
+        try {
+            return await this.userRepository.findAll(query);
+        } catch (err) {
+            this.logger.error(err)
+            throw err
         }
     }
 

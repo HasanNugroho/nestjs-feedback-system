@@ -2,7 +2,8 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { IUserRepository } from "../interfaces/user-repository.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../models/user.model";
-import { Repository } from "typeorm";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
+import { PaginationOptionsDto } from "src/common/dtos/page-option.dto";
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -28,6 +29,29 @@ export class UserRepository implements IUserRepository {
 
     async findByEmail(email: string): Promise<User | null> {
         return this.db.findOne({ where: { email } });
+    }
+
+    async findAll(query: PaginationOptionsDto): Promise<{ users: User[]; totalCount: number; }> {
+        try {
+            const where: FindOptionsWhere<User> = {};
+
+            where.name = query.keyword ? ILike(`%${query.keyword}%`) : undefined
+            where.email = query.keyword ? ILike(`%${query.keyword}%`) : undefined
+            where.fullname = query.keyword ? ILike(`%${query.keyword}%`) : undefined
+
+            const [users, totalCount] = await this.db.findAndCount({
+                where,
+                order: {
+                    [query.orderby || 'createdAt']: query.order || 'DESC',
+                },
+                skip: query.getOffset(),
+                take: query.limit,
+            });
+
+            return { users, totalCount };
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 
     async getAllUsersMinimalData(): Promise<User[]> {

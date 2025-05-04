@@ -1,6 +1,8 @@
+import { PaginationOptionsDto } from "src/common/dtos/page-option.dto";
 import { CreateUserDto } from "../dtos/create-user.dto";
 import { ResponseUserDto } from "../dtos/response-user.dto";
 import { UpdateUserDto } from "../dtos/update-user.dto";
+import { User } from "../models/user.model";
 
 export interface IUserService {
     /**
@@ -16,6 +18,13 @@ export interface IUserService {
      * @returns The user with the given email, or null if not found
      */
     findByEmail(email: string): Promise<ResponseUserDto | null>;
+
+    /**
+     * @param PaginationOptionsDto - Options for pagination, including page number and size
+     * 
+     * @returns The users with the given ID, or null if not found
+     */
+    findAll(query: PaginationOptionsDto): Promise<{ users: User[], totalCount: number }>;
 
     /**
      * @param user - The user to create

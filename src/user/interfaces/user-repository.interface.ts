@@ -1,3 +1,4 @@
+import { PaginationOptionsDto } from "src/common/dtos/page-option.dto";
 import { User } from "../models/user.model";
 
 export interface IUserRepository {
@@ -14,6 +15,13 @@ export interface IUserRepository {
      * @returns The user with the given email, or null if not found
      */
     findByEmail(email: string): Promise<User | null>;
+
+    /**
+     * @param PaginationOptionsDto - Options for pagination, including page number and size
+     * 
+     * @returns The users with the given ID, or null if not found
+     */
+    findAll(query: PaginationOptionsDto): Promise<{ users: User[], totalCount: number }>;
 
     /**
      * 
