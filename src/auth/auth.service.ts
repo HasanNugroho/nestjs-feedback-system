@@ -2,10 +2,10 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { plainToInstance } from 'class-transformer';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ExternalUserServiceAdapter } from '../adapters/external-user-service.adapter';
-import { IAuthService } from '../interfaces/auth-service.interface';
-import { Credentials } from '../dtos/credential.dto';
-import { CredentialResponse } from '../dtos/credential-response.dto';
+import { Credentials } from './dtos/credential.dto';
+import { CredentialResponse } from './dtos/credential-response.dto';
+import { ExternalUserServiceAdapter } from './adapters/external-user-service.adapter';
+import { IAuthService } from './interfaces/auth-service.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {

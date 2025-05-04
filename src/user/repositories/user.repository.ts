@@ -32,7 +32,7 @@ export class UserRepository implements IUserRepository {
 
     async update(id: string, userData: Partial<User>): Promise<void> {
         try {
-            await this.db.update(id, userData);
+            await this.db.update(id, { ...userData, updatedAt: new Date() });
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

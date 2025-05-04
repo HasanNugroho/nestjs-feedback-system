@@ -23,7 +23,10 @@ async function bootstrap() {
 }
 
 function configureApp(app) {
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new ValidationPipe({
+        transform: true,
+        whitelist: true,
+    }));
     app.enableCors();
     app.useGlobalFilters(new HttpExceptionFilter());
 }

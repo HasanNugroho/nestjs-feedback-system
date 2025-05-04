@@ -3,43 +3,27 @@ import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from "class-validato
 import { UserRoles } from "src/common/enums/role.enum";
 
 export class UpdateUserDto {
-    @ApiProperty({
-        description: "email of user",
-        example: "adam@user.com"
-    })
+    @ApiProperty({ example: "adam@user.com" })
     @IsEmail()
     @IsOptional()
     email?: string
 
-    @ApiProperty({
-        description: "Name of user",
-        example: "adam"
-    })
+    @ApiProperty({ example: "adam" })
     @IsString()
     @IsOptional()
     name?: string
 
-    @ApiProperty({
-        description: "Full name of user",
-        example: "adam"
-    })
+    @ApiProperty({ example: "adam" })
     @IsString()
     @IsOptional()
     fullname?: string
 
-    @ApiProperty({
-        description: "role of user",
-        enum: UserRoles,
-        example: UserRoles.USER
-    })
+    @ApiProperty({ example: UserRoles.USER })
     @IsEnum(UserRoles)
     @IsOptional()
     role?: UserRoles
 
-    @ApiProperty({
-        description: "password",
-        example: "adam123"
-    })
+    @ApiProperty({ example: "adam123" })
     @MinLength(6)
     @IsOptional()
     @IsString()

@@ -1,17 +1,16 @@
-import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
+import { ApiOperation, ApiCreatedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiConflictResponse } from '@nestjs/swagger';
 import { Inject } from '@nestjs/common';
 import { USER_SERVICE } from 'src/common/constant';
-import { IUserService } from '../interfaces/user-service.interface';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { UpdateUserDto } from '../dtos/update-user.dto';
+import { IUserService } from './interfaces/user-service.interface';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiResponse } from 'src/common/dtos/response.dto';
-import { ResponseUserDto } from '../dtos/response-user.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRoles } from 'src/common/enums/role.enum';
+import { ResponseUserDto } from './dtos/response-user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 
-@ApiBearerAuth()
+@Public()
 @Controller('api/users')
 export class UserController {
     constructor(
@@ -35,7 +34,7 @@ export class UserController {
     async create(@Body() payload: CreateUserDto) {
         try {
             const result = await this.userService.create(payload);
-            return new ApiResponse(HttpStatus.CREATED, true, "create user successfully", result, undefined)
+            return new ApiResponse(HttpStatus.CREATED, true, "create user successfully", result)
         } catch (error) {
             throw error;
         }
@@ -46,9 +45,8 @@ export class UserController {
     @ApiNotFoundResponse({
         description: "User not found",
     })
-    @Roles([UserRoles.ADMIN])
     @Get(':id')
-    async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    async findById(@Param('id', new ParseUUIDPipe()) id: string) {
         const user = await this.userService.findById(id);
         if (!user) {
             throw new NotFoundException("User not found");
@@ -65,8 +63,8 @@ export class UserController {
         description: "Bad request",
     })
     @Put(':id')
-    async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() userData: UpdateUserDto) {
-        const result = await this.userService.update(id, userData);
+    async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() payload: UpdateUserDto) {
+        const result = await this.userService.update(id, payload);
         return new ApiResponse(HttpStatus.CREATED, true, "update user successfully", result)
     }
 

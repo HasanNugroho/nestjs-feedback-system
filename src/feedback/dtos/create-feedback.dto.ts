@@ -1,26 +1,22 @@
+import { UploadedFiles } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
 import { FeedbackCategory, FeedbackStatus } from "src/common/enums/feedback.enum";
 
 export class CreateFeedbackDto {
-    @ApiProperty({
-        description: "message",
-        example: "message"
-    })
+    @ApiProperty({ example: "message" })
     @IsString()
     message: string
 
-    @ApiProperty({
-        description: "category",
-        example: "adam"
-    })
+    @ApiProperty({ enum: FeedbackCategory, example: FeedbackCategory.BUG_REPORT })
     @IsEnum(FeedbackCategory)
     category: FeedbackCategory
 
     @ApiProperty({
-        description: "status",
-        example: "adam"
+        type: 'array',
+        items: { type: 'string', format: 'binary' },
+        required: false,
+        description: 'Attachment files (optional)',
     })
-    @IsEnum(FeedbackStatus)
-    status: FeedbackStatus
+    files?: any[];
 }

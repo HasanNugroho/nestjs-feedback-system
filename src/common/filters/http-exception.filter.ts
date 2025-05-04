@@ -14,37 +14,55 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
 
-        let status = HttpStatus.INTERNAL_SERVER_ERROR;
-        let message: string | string[] = 'Internal server error';
-        let error: string | string[] | undefined = undefined;
-
-        if (exception instanceof HttpException) {
-            status = exception.getStatus();
-            const res = exception.getResponse();
-
-            if (typeof res === 'string') {
-                message = res;
-            } else if (typeof res === 'object') {
-                const { message: msg, error: err } = res as any;
-                message = msg ?? message;
-                error = err;
-            }
-        } else if (exception?.message) {
-            message = exception.message;
-        }
-
-        if (Array.isArray(message)) {
-            message = message.map(msg => msg.toString()).join(', ');
-        }
+        const { status, message } = this.resolveExceptionData(exception)
 
         const errorResponse = new ApiResponse(
             status,
             false,
             message,
             undefined,
-            error,
         );
 
         response.status(status).json(errorResponse);
+    }
+
+    resolveExceptionData(exception: any): { status: number; message: string } {
+        const defaultStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        const defaultMessage = 'Internal server error';
+
+        if (exception instanceof HttpException) {
+            const status = exception.getStatus();
+            const res = exception.getResponse();
+
+            if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
+                return { status, message: defaultMessage };
+            }
+
+            let message: string | string[] = defaultMessage;
+            if (typeof res === 'string') {
+                message = res;
+            } else if (typeof res === 'object') {
+                const { message: msg } = res as any;
+                message = msg ?? message;
+            }
+
+            if (Array.isArray(message)) {
+                message = message.map(msg => msg.toString()).join(', ');
+            }
+
+            return { status, message }
+        }
+
+        const errorWithMessage = exception as { message?: unknown };
+        const message = errorWithMessage?.message
+            ? String(errorWithMessage.message)
+            : defaultMessage;
+
+        console.error('Unhandled exception:', exception);
+
+        return {
+            status: defaultStatus,
+            message
+        };
     }
 }

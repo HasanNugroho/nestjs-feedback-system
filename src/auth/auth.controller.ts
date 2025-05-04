@@ -1,9 +1,9 @@
 import { Body, Controller, HttpStatus, Inject, Post } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { Credentials } from '../dtos/credential.dto';
-import { IAuthService } from '../interfaces/auth-service.interface';
+import { Credentials } from './dtos/credential.dto';
+import { IAuthService } from './interfaces/auth-service.interface';
 import { AUTH_SERVICE } from 'src/common/constant';
-import { Public } from '../decorators/public.decorator';
+import { Public } from './decorators/public.decorator';
 import { ApiResponse } from 'src/common/dtos/response.dto';
 
 @Controller('auth')

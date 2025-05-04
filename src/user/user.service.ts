@@ -1,11 +1,11 @@
 import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { IUserService } from '../interfaces/user-service.interface';
-import { IUserRepository } from '../interfaces/user-repository.interface';
 import { USER_REPOSITORY } from 'src/common/constant';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-import { ResponseUserDto } from '../dtos/response-user.dto';
-import { User } from '../models/user.model';
+import { IUserService } from './interfaces/user-service.interface';
+import { IUserRepository } from './interfaces/user-repository.interface';
+import { ResponseUserDto } from './dtos/response-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { User } from './models/user.model';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService implements IUserService {

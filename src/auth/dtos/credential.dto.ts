@@ -2,17 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
 export class Credentials {
-    @ApiProperty({
-        description: "email",
-        required: true,
-    })
+    @ApiProperty({ example: 'adam@user.com', required: true })
     @IsString()
     identifier: string;
 
-    @ApiProperty({
-        description: "password",
-        required: true,
-    })
+    @ApiProperty({ required: true })
     @IsString()
     password: string;
 }

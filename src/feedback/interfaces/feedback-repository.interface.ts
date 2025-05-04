@@ -1,4 +1,6 @@
+import { PaginationOptionsDto } from "src/common/dtos/page-option.dto";
 import { Feedback } from "../models/feedback.model";
+import { FilterOptionDto } from "../dtos/filter-option.dto";
 
 export interface IFeedbackRepository {
     /**
@@ -7,6 +9,13 @@ export interface IFeedbackRepository {
      * @returns The feedback with the given ID, or null if not found
      */
     findById(id: string): Promise<Feedback | null>;
+
+    /**
+     * @param FilterOptionDto - Options for pagination, including page number and size
+     * 
+     * @returns The feedback with the given ID, or null if not found
+     */
+    findAll(query: FilterOptionDto): Promise<{ feedback: Feedback[], totalCount: number }>;
 
     /**
      * @param feedback - The feedback to create

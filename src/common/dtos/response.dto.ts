@@ -3,19 +3,19 @@ export class ApiResponse<T> {
     statusCode: number;
     message: string | string[];
     data?: T;
-    error?: string | string[];
+    meta?: any;
 
     constructor(
         statusCode: number,
         success: boolean,
         message: string | string[],
         data?: T,
-        error?: string | string[],
+        meta?: any
     ) {
         this.statusCode = statusCode;
         this.success = success;
         this.message = message;
         this.data = data;
-        this.error = error;
+        this.meta = meta;
     }
 }
