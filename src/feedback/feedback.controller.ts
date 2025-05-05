@@ -11,7 +11,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { UserRoles } from 'src/common/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { PageMetaDto } from 'src/common/dtos/page-meta.dto';
-import { FilterOptionDto } from './dtos/filter-option.dto';
+import { FilterOptionDto } from './dtos/filter-feedback.dto';
 import { UpdateStatusFeedbackDto } from './dtos/update-feedback.dto';
 
 @ApiBearerAuth()

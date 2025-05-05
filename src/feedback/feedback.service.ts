@@ -6,7 +6,7 @@ import { CreateFeedbackDto } from './dtos/create-feedback.dto';
 import { Feedback } from './models/feedback.model';
 import { UpdateStatusFeedbackDto } from './dtos/update-feedback.dto';
 import { FeedbackStatus } from 'src/common/enums/feedback.enum';
-import { FilterOptionDto } from './dtos/filter-option.dto';
+import { FilterOptionDto } from './dtos/filter-feedback.dto';
 import { IFeedbackAttachmentRepository } from './interfaces/feedback-attachment-repository.interface';
 import { ExternalUserServiceAdapter } from './adapters/external-user-service.adapter';
 import { EventEmitter2 } from '@nestjs/event-emitter';

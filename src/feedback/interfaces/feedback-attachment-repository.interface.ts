@@ -1,4 +1,4 @@
-import { FeedbackAttachment } from "../models/feedback-attachment.model";
+import { FeedbackAttachment } from "../models/feedback-attachment.schema";
 
 export interface IFeedbackAttachmentRepository {
     /**

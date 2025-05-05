@@ -1,6 +1,6 @@
 import { PaginationOptionsDto } from "src/common/dtos/page-option.dto";
 import { Feedback } from "../models/feedback.model";
-import { FilterOptionDto } from "../dtos/filter-option.dto";
+import { FilterOptionDto } from "../dtos/filter-feedback.dto";
 
 export interface IFeedbackRepository {
     /**

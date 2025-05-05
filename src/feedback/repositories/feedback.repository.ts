@@ -3,7 +3,7 @@ import { IFeedbackRepository } from "../interfaces/feedback-repository.interface
 import { Feedback } from "../models/feedback.model";
 import { Between, FindOptionsWhere, ILike, In, LessThan, Not, Raw, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FilterOptionDto } from "../dtos/filter-option.dto";
+import { FilterOptionDto } from "../dtos/filter-feedback.dto";
 
 @Injectable()
 export class FeedbackPGRepository implements IFeedbackRepository {

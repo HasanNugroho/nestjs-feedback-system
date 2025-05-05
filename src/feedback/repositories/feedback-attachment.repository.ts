@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { IFeedbackAttachmentRepository } from "../interfaces/feedback-attachment-repository.interface";
 import { InjectModel } from "@nestjs/mongoose";
-import { FeedbackAttachment } from "../models/feedback-attachment.model";
+import { FeedbackAttachment } from "../models/feedback-attachment.schema";
 import { Model } from "mongoose";
 
 @Injectable()

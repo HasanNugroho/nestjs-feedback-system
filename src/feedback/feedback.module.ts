@@ -10,7 +10,7 @@ import { diskStorage } from 'multer';
 import * as fs from 'fs';
 import * as path from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FeedbackAttachment, FeedbackAttachmentSchema } from './models/feedback-attachment.model';
+import { FeedbackAttachment, FeedbackAttachmentSchema } from './models/feedback-attachment.schema';
 import { FeedbackAttachmentRepository } from './repositories/feedback-attachment.repository';
 import { ExternalUserServiceAdapter } from './adapters/external-user-service.adapter';
 import { UserModule } from 'src/user/user.module';

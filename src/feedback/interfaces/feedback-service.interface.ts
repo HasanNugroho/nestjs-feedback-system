@@ -1,7 +1,7 @@
 import { CreateFeedbackDto } from "../dtos/create-feedback.dto";
 import { UpdateStatusFeedbackDto } from "../dtos/update-feedback.dto";
 import { Feedback } from "../models/feedback.model";
-import { FilterOptionDto } from "../dtos/filter-option.dto";
+import { FilterOptionDto } from "../dtos/filter-feedback.dto";
 import { IUser } from "src/common/interfaces/user.interface";
 
 export interface IFeedbackService {
