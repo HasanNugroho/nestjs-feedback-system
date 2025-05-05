@@ -1,5 +1,5 @@
-# use base image
-FROM node:23-alpine
+# use base image for build
+FROM node:23-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -8,13 +8,25 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install 
+RUN npm ci
 
-# copy source code
+# Copy source files
 COPY . .
 
-# Build application
+# Build the application
 RUN npm run build
 
-# Default command for running application
+# Production image 
+FROM node:23-alpine
+
+WORKDIR /app
+
+# Copy the build result and package.json files to the final image
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+
+# Install only production dependencies
+RUN npm ci --omit=dev
+
+# Start the application
 CMD ["node", "dist/src/main.js"]
