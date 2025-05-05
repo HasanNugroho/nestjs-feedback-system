@@ -41,8 +41,8 @@ describe('UserService', () => {
                 fieldname: '',
                 encoding: '',
                 destination: '',
-                filename: '',
-                path: '',
+                filename: 'screenshot.png',
+                path: 'asset/screenshot.png',
                 stream: Readable.from([]),
             },
         ];
@@ -81,7 +81,9 @@ describe('UserService', () => {
                 expect.objectContaining({
                     feedbackId: 'feedback-2',
                     fileName: 'screenshot.png',
-                    path: '/data/screenshot.png',
+                    path: 'asset/screenshot.png',
+                    mimetype: 'image/png',
+                    size: "1024",
                 }),
             ]);
         });

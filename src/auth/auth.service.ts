@@ -46,10 +46,6 @@ export class AuthService implements IAuthService {
         }
     }
 
-    async logout(): Promise<void> {
-
-    }
-
     private async generateTokens(id: string): Promise<CredentialResponse> {
         const payload = { id };
         const tokenExpiresIn = this.configService.get<string>('jwt.expired');

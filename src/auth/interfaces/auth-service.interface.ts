@@ -8,10 +8,4 @@ export interface IAuthService {
      * @returns Access and refresh tokens
      */
     login(credential: Credentials): Promise<CredentialResponse>;
-
-    /**
-     * Log out current user session.
-     * @returns Void
-     */
-    logout(): Promise<void>;
 }
