@@ -1,5 +1,5 @@
 import { FeedbackCategory, FeedbackStatus } from "src/common/enums/feedback.enum"
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, Index } from "typeorm"
 import { FeedbackAttachment } from "./feedback-attachment.schema"
 import { IUser } from "src/common/interfaces/user.interface"
 
@@ -16,6 +16,7 @@ export class Feedback {
         enum: FeedbackCategory,
         default: FeedbackCategory.GENERAL_FEEDBACK,
     })
+    @Index()
     category: FeedbackCategory
 
     @Column({
@@ -23,9 +24,11 @@ export class Feedback {
         enum: FeedbackStatus,
         default: FeedbackStatus.PENDING,
     })
+    @Index()
     status: FeedbackStatus
 
     @Column()
+    @Index()
     userId: string;
 
     @CreateDateColumn()

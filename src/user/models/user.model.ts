@@ -2,7 +2,7 @@ import { UserRoles } from "src/common/enums/role.enum";
 import { IUser } from "src/common/interfaces/user.interface";
 import bcrypt from "bcryptjs";
 import { ResponseUserDto } from "../dtos/response-user.dto";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
 export class User implements IUser {
@@ -16,6 +16,7 @@ export class User implements IUser {
     fullname: string;
 
     @Column({ unique: true })
+    @Index()
     email: string;
 
     @Column()
